@@ -37,17 +37,18 @@ func match(s string, f func(byte) bool, i int) (matched string, next byte, j int
 }
 
 // ParamsMatch match string by param
-func ParamsMatch(source string, pth string) (url.Values, string, bool) {
+func ParamsMatch(source string, pth string,noExtension bool) (url.Values, string, bool) {
 	var (
 		i, j int
 		p    = make(url.Values)
 		ext  = path.Ext(pth)
 	)
 
-	pth = strings.TrimSuffix(pth, ext)
-
-	if ext != "" {
-		p.Add(":format", strings.TrimPrefix(ext, "."))
+	if ! noExtension {
+		pth = strings.TrimSuffix(pth, ext)
+		if ext != "" {
+			p.Add(":format", strings.TrimPrefix(ext, "."))
+		}
 	}
 
 	for i < len(pth) {
