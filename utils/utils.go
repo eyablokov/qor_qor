@@ -350,13 +350,19 @@ func GetAbsURL(req *http.Request) url.URL {
 		return *req.URL
 	}
 
+	var result *url.URL
 	if domain := req.Header.Get("Origin"); domain != "" {
-		parseResult, _ := url.Parse(domain)
-		result = *parseResult
+		result, _ = url.Parse(domain)
+	} else {
+		if req.TLS == nil {
+			result, _ = url.Parse("http://" + req.Host)
+		} else {
+			result, _ = url.Parse("https://" + req.Host)
+		}
 	}
 
 	result.Parse(req.RequestURI)
-	return result
+	return *result
 }
 
 // Indirect returns last value that v points to
